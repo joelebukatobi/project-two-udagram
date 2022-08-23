@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import { filterImageFromURL, deleteLocalFiles } from './util/util';
+import { Request, Response } from 'express';
 
 (async () => {
   // Init the Express application
@@ -30,22 +31,24 @@ import { filterImageFromURL, deleteLocalFiles } from './util/util';
 
   // Get Endpoint
   // Filters Image
-  app.get('/filteredimage', async (req, res) => {
+  app.get('/filteredimage', async (req: Request, res: Response) => {
     //Initialize image_url
-    const image_url = req.query.image_url.toString();
 
-    //Filter Function
-    const filteredImage = await filterImageFromURL(image_url);
+    const image = req.query.image_url;
 
     // Validate image
-    if (image_url) {
+    if (image === undefined) {
+      // Returns Error Message
+      res.status(400).send('Please add an Image URL in this format /filteredimage?image_url={{}}');
+      console.log('Please add an Image URL in this format /filteredimage?image_url={{}}');
+    } else {
+      const image_url = image.toString();
+      //Filter Function
+      const filteredImage = await filterImageFromURL(image_url);
       // Send Filtered Image
       res.status(200).sendFile(filteredImage, () => {
         deleteLocalFiles([filteredImage]);
       });
-    } else {
-      // Returns Error Message
-      res.status(400).send('Please input Image URL');
     }
   });
 
