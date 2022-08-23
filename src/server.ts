@@ -32,8 +32,6 @@ import { Request, Response } from 'express';
   // Get Endpoint
   // Filters Image
   app.get('/filteredimage', async (req: Request, res: Response) => {
-    //Initialize image_url
-
     const image = req.query.image_url;
 
     // Validate image
@@ -42,6 +40,7 @@ import { Request, Response } from 'express';
       res.status(400).send('Please add an Image URL in this format /filteredimage?image_url={{}}');
       console.log('Please add an Image URL in this format /filteredimage?image_url={{}}');
     } else {
+      //Initialize image_url
       const image_url = image.toString();
       //Filter Function
       const filteredImage = await filterImageFromURL(image_url);
