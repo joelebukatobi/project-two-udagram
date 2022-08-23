@@ -39,19 +39,21 @@ const util_1 = require("./util/util");
     // Filters Image
     app.get('/filteredimage', (req, res) => __awaiter(this, void 0, void 0, function* () {
         //Initialize image_url
-        const image_url = req.query.image_url.toString();
-        //Filter Function
-        const filteredImage = yield util_1.filterImageFromURL(image_url);
+        const image = req.query.image_url;
         // Validate image
-        if (image_url) {
+        if (image === undefined) {
+            // Returns Error Message
+            res.status(400).send('Please add an Image URL in this format /filteredimage?image_url={{}}');
+            console.log('Please add an Image URL in this format /filteredimage?image_url={{}}');
+        }
+        else {
+            const image_url = image.toString();
+            //Filter Function
+            const filteredImage = yield util_1.filterImageFromURL(image_url);
             // Send Filtered Image
             res.status(200).sendFile(filteredImage, () => {
                 util_1.deleteLocalFiles([filteredImage]);
             });
-        }
-        else {
-            // Returns Error Message
-            res.status(400).send('Please input Image URL');
         }
     }));
     /**************************************************************************** */
